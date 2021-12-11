@@ -104,9 +104,9 @@ list2 = ['traveler', 'paimon', 12, 36, 10, 'venti', 'jean', 29, 34, 75, 'aloy']
 # Bubble Sort Demonstration
 print("Bubble Sorting:")
 bubble_sort(list1)
-print("Sorting the first list: {}".format(list1))
+print("Sorted list: {}".format(list1))
 
 # Quick Sort Demonstration
 print("Quick Sorting:")
 list2 = quick_sort(list2)
-print("Sorting the first list: {}".format(list2))
+print("Sorted list: {}".format(list2))
