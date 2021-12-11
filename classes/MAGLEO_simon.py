@@ -25,24 +25,24 @@ class Pokemon:
         damage = (((((2*50)/5)+2)*65*(self.atk/enemy.defense))/50)+2
         effect_table = {}
         if self.type == 'Fire':
-            effect_table = {"Fire":0.5, "Water":0.5, "Normal":1.0, "Grass":2.0}
+            effect_table = {"Fire":0., "Water":0.75, "Normal":1.0, "Grass":1.25}
 
         elif self.type == 'Water':
-            effect_table = {"Fire":2, "Water":0.5, "Normal":1.0, "Grass":0.5}
+            effect_table = {"Fire":1.25, "Water":0.75, "Normal":1.0, "Grass":0.75}
 
         elif self.type == 'Normal':
             effect_table = {"Fire":1.0, "Water":1.0, "Normal":1.0, "Grass":1.0}
 
         elif self.type == 'Grass':
-            effect_table = {"Fire":0.5, "Water":2.0, "Normal":1.0, "Grass":0.5}
+            effect_table = {"Fire":0.75, "Water":1.25, "Normal":1.0, "Grass":0.75}
 
         if accuracy < 30:
             print("- Attack missed {}!".format(enemy.name))
 
         elif accuracy < 90:
-            print("- Attack hit {}!".format(enemy.name))
+            print("- Attack hit {} for {} dmg points!".format(enemy.name, damage))
             enemy.hp = max(0,round(enemy.hp - (damage * effect_table[enemy.type])))
-            if effect_table[enemy.type] == 2:
+            if effect_table[enemy.type] == 1.25:
                 print("- It's super effective")
             elif effect_table[enemy.type] == 1:
                 print("- It's effective")
@@ -52,7 +52,7 @@ class Pokemon:
         else:
             print("- Critical hit on {}!".format(enemy.name))
             enemy.hp = max(0,round(enemy.hp - (damage * effect_table[enemy.type] * 1.25)))
-            if effect_table[enemy.type] == 2:
+            if effect_table[enemy.type] == 1.25:
                 print("- It's super effective")
             elif effect_table[enemy.type] == 1:
                 print("- It's effective")
@@ -66,18 +66,18 @@ class Pokemon:
         damage = (((((2*50)/5)+2)*100*(self.sp_atk/enemy.sp_def))/50)+2
         effect_table = {}
         if self.type == 'Fire':
-            effect_table = {"Fire":0.5, "Water":0.5, "Normal":1.0, "Grass":2.0}
+            effect_table = {"Fire":0.75, "Water":0.75, "Normal":1.0, "Grass":1.25}
 
         elif self.type == 'Water':
-            effect_table = {"Fire":2, "Water":0.5, "Normal":1.0, "Grass":0.5}
+            effect_table = {"Fire":1.25, "Water":0.75, "Normal":1.0, "Grass":0.75}
 
         elif self.type == 'Normal':
             effect_table = {"Fire":1.0, "Water":1.0, "Normal":1.0, "Grass":1.0}
 
         elif self.type == 'Grass':
-            effect_table = {"Fire":0.5, "Water":2.0, "Normal":1.0, "Grass":0.5}
+            effect_table = {"Fire":0.75, "Water":1.25, "Normal":1.0, "Grass":0.75}
 
-        if effect_table[enemy.type] == 2:
+        if effect_table[enemy.type] == 1.25:
             print("- It's super effective")
         elif effect_table[enemy.type] == 1:
             print("- It's effective")
@@ -99,24 +99,24 @@ class Player:
         self.special_pp = special_pp
 
 # Kinds of pokemons
-Kyogre = Pokemon('Kyogre', 500, 'Water', 100, 150, 90, 140, 'Aqua Tail', 'Hydro Pump')
-Reshiram = Pokemon('Reshiram', 500, 'Fire', 120, 150, 100, 120, 'Fire Fang', 'Blue Flare')
-Torterra = Pokemon('Torterra', 450, 'Grass', 109, 75, 105, 85, 'Razor Leaf', 'Leaf Storm')
-Porygon = Pokemon('Porygon-Z', 425, 'Normal', 80, 135, 70, 75, 'Tackle', 'Hyper Beam')
-pokemon_list = [Kyogre, Reshiram, Torterra, Porygon]
+Kyogre = Pokemon('Kyogre', 250, 'Water', 100, 150, 90, 140, 'Aqua Tail', 'Hydro Pump')
+Reshiram = Pokemon('Reshiram', 250, 'Fire', 120, 150, 100, 120, 'Fire Fang', 'Blue Flare')
+Virizion = Pokemon('Virizion', 225, 'Grass', 109, 75, 105, 85, 'Razor Leaf', 'Leaf Storm')
+Regigigas = Pokemon('Regigigas', 275, 'Normal', 160, 80, 110, 110, 'Tackle', 'Hyper Beam')
+pokemon_list = [Kyogre, Reshiram, Virizion, Regigigas]
 
-red = Player(pokemon_list[0], 3)
-blue = Player(pokemon_list[0], 3)
+red = Player(pokemon_list[0], 5)
+blue = Player(pokemon_list[0], 5)
 
 # Gameplay interface
 
 ## function for survial mode (fight as much pokemons as you can before dying)
 def random_match():
-    opponent = pokemon_list[random.randint(0,2)]
+    opponent = pokemon_list.pop(random.randint(0,len(pokemon_list)-1))
     blue.pokemon = opponent
     print("\nYour opponent is {}!\n".format(opponent.name))
 
-    while red.pokemon.hp > 0 and opponent.hp > 0:
+    while True:
 
         # Player's turn
         print("It's your turn. What do you want to do?")
@@ -137,6 +137,9 @@ def random_match():
                  print("- You don't have any PP left for this move!\n")
                  continue
 
+        # check if opponent's hp is 0
+        if opponent.hp <= 0:
+            break
         # Opponent's Turn
         print("Opponent's turn: ")
         time.sleep(1)
@@ -155,7 +158,15 @@ def random_match():
                 time.sleep(1)
                 print("- Blue used {}!".format(blue.pokemon.normal_move))
                 opponent.normal_attack(red.pokemon)
-    if blue.pokemon.hp <= 0:
+
+        if red.pokemon.hp <= 0:
+            break
+
+    if len(pokemon_list) <= 0:
+        print("\nCongratulations Red! You beat all of the pokemons of Blue, and are now the leader of the elite 4!\n")
+        print(len(pokemon_list))
+        matchmaking()
+    elif blue.pokemon.hp <= 0:
         print("\nYou Won! You move on to the next round...")
         random_match()
     else:
@@ -165,7 +176,7 @@ def random_match():
 # Choosing pokemon
 def prologue():
     print("Welcome to Pokemon: Hot Trash! To begin, choose what pokemon you would like to start with!")
-    print("1. {}\n2. {}\n3. {}\n4. {}".format(Kyogre.name, Reshiram.name, Torterra.name, Porygon.name))
+    print("1. {}\n2. {}\n3. {}\n4. {}".format(Kyogre.name, Reshiram.name, Virizion.name, Regigigas.name))
     try:
         choice = int(input("Who do you choose?: "))
         if choice > 4 or choice < 1:
@@ -182,13 +193,13 @@ def prologue():
 
 # Start survival mode, restore the health of your pokemon, or quit the game
 def matchmaking():
-    global Kyogre, Reshiram, Torterra, Porygon, red, blue
-    Kyogre = Pokemon('Kyogre', 150, 'Water', 100, 150, 90, 140, 'Aqua Tail', 'Hydro Pump')
-    Reshiram = Pokemon('Reshiram', 150, 'Fire', 120, 150, 100, 120, 'Fire Fang', 'Blue Flare')
-    Torterra = Pokemon('Torterra', 125, 'Grass', 109, 75, 105, 85, 'Razor Leaf', 'Leaf Storm')
-    Porygon = Pokemon('Porygon-Z', 105, 'Normal', 80, 135, 70, 75, 'Tackle', 'Hyper Beam')
-    red = Player(pokemon_list[0], 3)
-    blue = Player(pokemon_list[0], 3)
+    global Kyogre, Reshiram, Virizion, Porygon, red, blue
+    Kyogre = Pokemon('Kyogre', 250, 'Water', 100, 150, 90, 140, 'Aqua Tail', 'Hydro Pump')
+    Reshiram = Pokemon('Reshiram', 250, 'Fire', 120, 150, 100, 120, 'Fire Fang', 'Blue Flare')
+    Virizion = Pokemon('Virizion', 250, 'Grass', 109, 75, 105, 85, 'Razor Leaf', 'Leaf Storm')
+    Porygon = Pokemon('Porygon-Z', 225, 'Normal', 80, 1.25, 70, 75, 'Tackle', 'Hyper Beam')
+    red = Player(red.pokemon, 5)
+    blue = Player(blue.pokemon, 5)
 
     print("\nYou now have to test your pokemon! What do you want to do?")
     print("1. Survival Mode\n2. Heal Pokemon (Health is currently at {}/{})\n3. Exit".format(red.pokemon.hp, red.pokemon.max_hp))
