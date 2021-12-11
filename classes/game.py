@@ -114,7 +114,55 @@ blue = Player(pokemon_list[0], 5)
 
 ## function for survial mode (fight as much pokemons as you can before dying)
 def random_match():
-    print("hatdog")
+    global Kyogre, Reshiram, Virizion, Regigigas, pokemon_list, red, blue
+    # player's turn
+    print("\nYour turn:")
+    print("1. Normal attack\n2. Special Attack (PP: {})".format(red.special_pp))
+    choice = int(input("What do you choose?: "))
+    if choice == 1:
+        red.pokemon.normal_attack(blue.pokemon)
+    elif choice == 2:
+        if red.special_pp > 0:
+            red.pokemon.special_attack(blue.pokemon)
+            red.special_pp-=1
+        else:
+            random_match()
+
+    if blue.pokemon.hp <= 0:
+        print("You won!")
+        Kyogre = Pokemon('Kyogre', 200, 'Water', 94, 139, 110, 125, 'Aqua Tail', 'Hydro Pump')
+        Reshiram = Pokemon('Reshiram', 200, 'Fire', 121, 139, 121, 121, 'Fire Fang', 'Blue Flare')
+        Virizion = Pokemon('Virizion', 220, 'Grass', 156, 189, 110, 120, 'Razor Leaf', 'Leaf Storm')
+        Regigigas = Pokemon('Regigigas', 300, 'Normal', 148, 76, 103, 103, 'Tackle', 'Hyper Beam')
+        pokemon_list = [Kyogre, Reshiram, Virizion, Regigigas]
+        red = Player(red.pokemon, 5)
+        blue = Player(blue.pokemon, 5)
+        prologue()
+
+    # opponent's turn
+    print("Blue's turn: ")
+    choice = random.randint(1,2)
+    if choice == 1:
+        blue.pokemon.normal_attack(red.pokemon)
+    elif choice == 2:
+        if blue.special_pp > 0:
+            blue.pokemon.special_attack(red.pokemon)
+            blue.special_pp-=1
+        else:
+            blue.pokemon.normal_attack(red.pokemon)
+
+    if red.pokemon.hp <= 0:
+        print("You lost!")
+        Kyogre = Pokemon('Kyogre', 200, 'Water', 94, 139, 110, 125, 'Aqua Tail', 'Hydro Pump')
+        Reshiram = Pokemon('Reshiram', 200, 'Fire', 121, 139, 121, 121, 'Fire Fang', 'Blue Flare')
+        Virizion = Pokemon('Virizion', 220, 'Grass', 156, 189, 110, 120, 'Razor Leaf', 'Leaf Storm')
+        Regigigas = Pokemon('Regigigas', 300, 'Normal', 148, 76, 103, 103, 'Tackle', 'Hyper Beam')
+        pokemon_list = [Kyogre, Reshiram, Virizion, Regigigas]
+        red = Player(red.pokemon, 5)
+        blue = Player(blue.pokemon, 5)
+        prologue()
+    else:
+        random_match()
 
 # Choosing pokemon
 def prologue():
@@ -127,10 +175,27 @@ def prologue():
             prologue()
         else:
             red.pokemon = pokemon_list.pop(choice-1)
+            blue.pokemon = pokemon_list[random.randint(0,len(pokemon_list)-1)]
             print("\nYou've chosen {}!".format(red.pokemon.name))
+            print("\nYour rival, Blue, has chosen {}".format(blue.pokemon.name))
     except:
         print("\nWrong Input, Try Again.\n")
         prologue()
 
     print("Congratulations! You now have your first pokemon.")
+    print("You now have to test your pokemon, what would you like to do next?")
+    print("1. Fight\n2. Heal Pokemon\n3. Quit")
+    choice = int(input("What do you choose?: "))
+    try:
+        if choice == 1:
+            random_match()
+        elif choice == 2:
+            red.pokemon.full_restore()
+        elif choice == 3:
+            sys.exit()
+        else:
+            raise ValueError
+    except ValueError:
+        print("Choose a valid option.")
 
+prologue()
