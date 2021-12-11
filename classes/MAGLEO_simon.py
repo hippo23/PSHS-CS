@@ -1,5 +1,6 @@
 import random
 import time
+import sys
 # MAGLEO, Simon Benedict A.
 # 11 - A 
 # LG 2.1 Classes and Objects
@@ -75,7 +76,7 @@ blue = Player(pokemon_list[0], 3)
 def random_match():
     opponent = pokemon_list[random.randint(0,2)]
     blue.pokemon = opponent
-    print("\nYour opponent is {}!".format(opponent.name))
+    print("\nYour opponent is {}!\n".format(opponent.name))
 
     while red.pokemon.hp > 0 and opponent.hp > 0:
 
@@ -117,10 +118,11 @@ def random_match():
                 print("- Blue used {}!".format(blue.pokemon.normal_move))
                 opponent.normal_attack(red.pokemon)
     if blue.pokemon.hp <= 0:
-        print("\nYou Won!\n")
+        print("\nYou Won! You move on to the next round...")
+        random_match()
     else:
         print("\nYou Lost...\n")
-    matchmaking()
+        matchmaking()
 
 def prologue():
     print("Welcome to Pokemon: Hot Trash! To begin, choose what pokemon you would like to start with!")
@@ -141,7 +143,7 @@ def prologue():
 
 def matchmaking():
     print("\nYou now have to test your pokemon! What do you want to do?")
-    print("1. Fight\n2. Heal Pokemon (Health is currently at {}/{})".format(red.pokemon.hp, red.pokemon.max_hp))
+    print("1. Survival Mode\n2. Heal Pokemon (Health is currently at {}/{})\n3. Exit".format(red.pokemon.hp, red.pokemon.max_hp))
     try:
         choice = int(input("What do you choose?: "))
         if choice == 1:
@@ -149,10 +151,12 @@ def matchmaking():
         elif choice == 2:
             red.pokemon.full_restore()
             matchmaking()
+        elif choice == 3:
+            sys.exit()
         else:
             print("\nChoose a valid option.")
             matchmaking()
-    except:
+    except ValueError:
         print("\nChoose a valid option.")
         matchmaking()
 
