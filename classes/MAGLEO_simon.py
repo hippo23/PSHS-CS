@@ -5,6 +5,7 @@ import sys
 # 11 - A 
 # LG 2.1 Classes and Objects
 
+# Exercise Section 1 - Class for pokemons
 class Pokemon:
     def __init__(self, name, hp, type, atk, sp_atk, defense, sp_defense, normal_move, special_move):
         self.name = name
@@ -18,6 +19,7 @@ class Pokemon:
         self.special_move = special_move
         self.max_hp = hp
 
+    # method for normal attacks
     def normal_attack(self, enemy):
         accuracy = random.randint(0, 100) 
         if accuracy < 30:
@@ -31,9 +33,9 @@ class Pokemon:
             print("- Critical hit on {}!".format(enemy.name))
             enemy.hp = enemy.hp - (self.atk*2)
 
-        # print("\n{} used {}!".format(self.name, self.normal_move))
         print("- HP of {}: {}/{}\n".format(enemy.name, enemy.hp, enemy.max_hp))
 
+    # method for special attacks
     def special_attack(self, enemy):
         if self.type == 'Fire':
             effect_table = {"Fire":0.5, "Water":0.5, "Normal":1.0, "Grass":2.0}
@@ -51,18 +53,20 @@ class Pokemon:
             effect_table = {"Fire":0.5, "Water":2.0, "Normal":1.0, "Grass":0.5}
             enemy.hp = enemy.hp - (self.sp_atk * effect_table[enemy.type])
 
-        # print("\n{} used {}!".format(self.name, self.special_move))
         print("- HP of {}: {}/{}\n".format(enemy.name, enemy.hp, enemy.max_hp))
 
+    # method for resorting health
     def full_restore(self):
         self.hp = self.max_hp
         print("\n{} - HP has been restored back to {}\n".format(self.name, self.hp))
 
+# Exercise Section 2 - Classes for players (made to store power points for the special move)
 class Player:
     def __init__(self, pokemon, special_pp):
         self.pokemon = pokemon
         self.special_pp = special_pp
 
+# Kinds of pokemons
 Kyogre = Pokemon('Kyogre', 500, 'Water', 100, 150, 90, 140, 'Aqua Tail', 'Hydro Pump')
 Reshiram = Pokemon('Reshiram', 500, 'Fire', 120, 150, 100, 120, 'Fire Fang', 'Blue Flare')
 Torterra = Pokemon('Torterra', 450, 'Grass', 109, 75, 105, 85, 'Razor Leaf', 'Leaf Storm')
@@ -72,7 +76,9 @@ pokemon_list = [Kyogre, Reshiram, Torterra, Porygon]
 red = Player(pokemon_list[0], 3)
 blue = Player(pokemon_list[0], 3)
 
-# sample gameplay
+# Gameplay interface
+
+## function for survial mode (fight as much pokemons as you can before dying)
 def random_match():
     opponent = pokemon_list[random.randint(0,2)]
     blue.pokemon = opponent
@@ -124,6 +130,7 @@ def random_match():
         print("\nYou Lost...\n")
         matchmaking()
 
+# Choosing pokemon
 def prologue():
     print("Welcome to Pokemon: Hot Trash! To begin, choose what pokemon you would like to start with!")
     print("1. {}\n2. {}\n3. {}\n4. {}".format(Kyogre.name, Reshiram.name, Torterra.name, Porygon.name))
@@ -141,6 +148,7 @@ def prologue():
 
     print("Congratulations! You now have your first pokemon.")
 
+# Start survival mode, restore the health of your pokemon, or quit the game
 def matchmaking():
     print("\nYou now have to test your pokemon! What do you want to do?")
     print("1. Survival Mode\n2. Heal Pokemon (Health is currently at {}/{})\n3. Exit".format(red.pokemon.hp, red.pokemon.max_hp))
