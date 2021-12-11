@@ -98,11 +98,27 @@ def partition_type(args,first,last):
 
 list1 = [19, 5, 'cat', 'rabbit', 2, 32, 'mice', 'dog', 7]
 list2 = ['traveler', 'paimon', 12, 36, 10, 'venti', 'jean', 29, 34, 75, 'aloy']
-nlist = [54,26,93,17,77,31,44,55,20]
+list3 = [27, 'harry', 'ron', 17, 'hermione', 78, 93, 'dobby', 132, 'dumbledore']
+
+# Bubble Sort Demonstration
+bubble_sort(list1)
+bubble_sort(list2)
+bubble_sort(list3)
+
+print("Bubble Sorting:")
+print("Sorting the first list: {}".format(list1))
+print("Sorting the second list: {}".format(list2))
+print("Sorting the third list: {}".format(list3))
+
+list1 = [19, 5, 'cat', 'rabbit', 2, 32, 'mice', 'dog', 7]
+list2 = ['traveler', 'paimon', 12, 36, 10, 'venti', 'jean', 29, 34, 75, 'aloy']
+list3 = [27, 'harry', 'ron', 17, 'hermione', 78, 93, 'dobby', 132, 'dumbledore']
+
+list1 = quick_sort(list1)
 list2 = quick_sort(list2)
-print(list2)
-# Exercise Section 1 
+list3 = quick_sort(list3)
 
-# Exercise Section 2
-
-# Exercise Section 3
+print("Quick Sorting:")
+print("Sorting the first list: {}".format(list1))
+print("Sorting the second list: {}".format(list2))
+print("Sorting the third list: {}".format(list3))
