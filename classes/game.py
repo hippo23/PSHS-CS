@@ -114,68 +114,7 @@ blue = Player(pokemon_list[0], 5)
 
 ## function for survial mode (fight as much pokemons as you can before dying)
 def random_match():
-    opponent = pokemon_list.pop(random.randint(0,len(pokemon_list)-1))
-    blue.pokemon = opponent
-    print("\nYour opponent is {}!\n".format(opponent.name))
-
-    while True:
-        # Player's turn
-        print("It's your turn. What do you want to do?")
-        print("1. Normal Move")
-        print("2. Special Move (PP: {})".format(red.special_pp))
-        try:
-            choice = int(input("What do you choose?: "))
-        except ValueError:
-            print("\nChoose a valid option.\n")
-            continue
-        if choice == 1:
-            time.sleep(2)
-            print("- You used {}!".format(red.pokemon.normal_move))
-            red.pokemon.normal_attack(opponent)
-        elif choice == 2:
-            if red.special_pp > 0:
-                time.sleep(2)
-                print("- You used {}!".format(red.pokemon.special_move))
-                red.pokemon.special_attack(opponent)
-                red.special_pp-=1
-            else:
-                 print("- You don't have any PP left for this move!\n")
-                 continue
-        else:
-            print("\nChoose a valid option.\n")
-            continue
-
-        # check if opponent's hp is 0
-        if opponent.hp <= 0:
-            break
-        # Opponent's Turn
-        print("Opponent's turn: ")
-        time.sleep(1)
-        opponent_choice = random.randint(1, 2)
-        if opponent_choice == 1:
-            time.sleep(1)
-            print("- Blue used {}!".format(blue.pokemon.normal_move))
-            opponent.normal_attack(red.pokemon)
-        else:
-            if blue.special_pp > 0:
-                time.sleep(1)
-                print("- Blue used {}!".format(blue.pokemon.special_move))
-                opponent.special_attack(red.pokemon)
-                blue.special_pp-=1
-            else:
-                time.sleep(1)
-                print("- Blue used {}!".format(blue.pokemon.normal_move))
-                opponent.normal_attack(red.pokemon)
-
-        if red.pokemon.hp <= 0:
-            break
-
-    if red.pokemon.hp <= 0:
-        print("\nYou Lost...\n")
-        prologue()
-    elif blue.pokemon.hp <= 0:
-        print("\nYou Won! You move on to the next round...")
-        random_match()
+    print("hatdog")
 
 # Choosing pokemon
 def prologue():
@@ -195,33 +134,3 @@ def prologue():
 
     print("Congratulations! You now have your first pokemon.")
 
-# Start survival mode, restore the health of your pokemon, or quit the game
-def matchmaking():
-    global Kyogre, Reshiram, Virizion, Regigigas, red, blue
-    Kyogre = Pokemon('Kyogre', 200, 'Water', 94, 139, 110, 125, 'Aqua Tail', 'Hydro Pump')
-    Reshiram = Pokemon('Reshiram', 171, 'Fire', 121, 139, 121, 121, 'Fire Fang', 'Blue Flare')
-    Virizion = Pokemon('Virizion', 220, 'Grass', 156, 189, 110, 120, 'Razor Leaf', 'Leaf Storm')
-    Regigigas = Pokemon('Regigigas', 300, 'Normal', 148, 76, 103, 103, 'Tackle', 'Hyper Beam')
-    red = Player(red.pokemon, 5)
-    blue = Player(blue.pokemon, 5)
-
-    print("\nYou now have to test your pokemon! What do you want to do?")
-    print("1. Survival Mode\n2. Heal Pokemon (Health is currently at {}/{})\n3. Exit".format(red.pokemon.hp, red.pokemon.max_hp))
-    try:
-        choice = int(input("What do you choose?: "))
-        if choice == 1:
-            random_match()
-        elif choice == 2:
-            red.pokemon.full_restore()
-            matchmaking()
-        elif choice == 3:
-            sys.exit()
-        else:
-            print("\nChoose a valid option.")
-            matchmaking()
-    except ValueError:
-        print("\nChoose a valid option.")
-        matchmaking()
-
-prologue()
-matchmaking() 
