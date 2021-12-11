@@ -100,7 +100,6 @@ def partition_type(args,first,last):
 
 list1 = [19, 5, 'cat', 'rabbit', 2, 32, 'mice', 'dog', 7]
 list2 = ['traveler', 'paimon', 12, 36, 10, 'venti', 'jean', 29, 34, 75, 'aloy']
-list3 = [27, 'harry', 'ron', 17, 'hermione', 78, 93, 'dobby', 132, 'dumbledore']
 
 # Bubble Sort Demonstration
 print("Bubble Sorting:")
@@ -108,7 +107,6 @@ bubble_sort(list1)
 print("Sorting the first list: {}".format(list1))
 
 # Quick Sort Demonstration
-list2 = ['traveler', 'paimon', 12, 36, 10, 'venti', 'jean', 29, 34, 75, 'aloy']
 print("Quick Sorting:")
 list2 = quick_sort(list2)
 print("Sorting the first list: {}".format(list2))
