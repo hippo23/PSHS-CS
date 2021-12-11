@@ -3,8 +3,7 @@
 # LG 3.1 - 4.1 Recursion
 
 # Exercise 1 - Recursion
-def collatz_conjecture(x, steps=0): 
-    # base case
+def collatz_conjecture(x, steps=0): # base case
     if x == 1:
         # base definition
         return steps

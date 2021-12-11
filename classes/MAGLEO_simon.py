@@ -22,37 +22,69 @@ class Pokemon:
     # method for normal attacks
     def normal_attack(self, enemy):
         accuracy = random.randint(0, 100) 
+        damage = (((((2*50)/5)+2)*65*(self.atk/enemy.defense))/50)+2
+        effect_table = {}
+        if self.type == 'Fire':
+            effect_table = {"Fire":0.5, "Water":0.5, "Normal":1.0, "Grass":2.0}
+
+        elif self.type == 'Water':
+            effect_table = {"Fire":2, "Water":0.5, "Normal":1.0, "Grass":0.5}
+
+        elif self.type == 'Normal':
+            effect_table = {"Fire":1.0, "Water":1.0, "Normal":1.0, "Grass":1.0}
+
+        elif self.type == 'Grass':
+            effect_table = {"Fire":0.5, "Water":2.0, "Normal":1.0, "Grass":0.5}
+
         if accuracy < 30:
             print("- Attack missed {}!".format(enemy.name))
 
         elif accuracy < 90:
             print("- Attack hit {}!".format(enemy.name))
-            enemy.hp = enemy.hp - self.atk
+            enemy.hp = max(0,round(enemy.hp - (damage * effect_table[enemy.type])))
+            if effect_table[enemy.type] == 2:
+                print("- It's super effective")
+            elif effect_table[enemy.type] == 1:
+                print("- It's effective")
+            else:
+                print("- It's not very effective")
 
         else:
             print("- Critical hit on {}!".format(enemy.name))
-            enemy.hp = enemy.hp - (self.atk*2)
+            enemy.hp = max(0,round(enemy.hp - (damage * effect_table[enemy.type] * 1.25)))
+            if effect_table[enemy.type] == 2:
+                print("- It's super effective")
+            elif effect_table[enemy.type] == 1:
+                print("- It's effective")
+            else:
+                print("- It's not very effective")
 
         print("- HP of {}: {}/{}\n".format(enemy.name, enemy.hp, enemy.max_hp))
 
     # method for special attacks
     def special_attack(self, enemy):
+        damage = (((((2*50)/5)+2)*100*(self.sp_atk/enemy.sp_def))/50)+2
+        effect_table = {}
         if self.type == 'Fire':
             effect_table = {"Fire":0.5, "Water":0.5, "Normal":1.0, "Grass":2.0}
-            enemy.hp = enemy.hp - (self.sp_atk * effect_table[enemy.type])
 
         elif self.type == 'Water':
             effect_table = {"Fire":2, "Water":0.5, "Normal":1.0, "Grass":0.5}
-            enemy.hp = enemy.hp - (self.sp_atk * effect_table[enemy.type])
 
         elif self.type == 'Normal':
             effect_table = {"Fire":1.0, "Water":1.0, "Normal":1.0, "Grass":1.0}
-            enemy.hp = enemy.hp - (self.sp_atk * effect_table[enemy.type])
 
         elif self.type == 'Grass':
             effect_table = {"Fire":0.5, "Water":2.0, "Normal":1.0, "Grass":0.5}
-            enemy.hp = enemy.hp - (self.sp_atk * effect_table[enemy.type])
 
+        if effect_table[enemy.type] == 2:
+            print("- It's super effective")
+        elif effect_table[enemy.type] == 1:
+            print("- It's effective")
+        else:
+            print("- It's not very effective")
+
+        enemy.hp = max(0,round(enemy.hp - (damage * effect_table[enemy.type])))
         print("- HP of {}: {}/{}\n".format(enemy.name, enemy.hp, enemy.max_hp))
 
     # method for resorting health
@@ -150,6 +182,14 @@ def prologue():
 
 # Start survival mode, restore the health of your pokemon, or quit the game
 def matchmaking():
+    global Kyogre, Reshiram, Torterra, Porygon, red, blue
+    Kyogre = Pokemon('Kyogre', 150, 'Water', 100, 150, 90, 140, 'Aqua Tail', 'Hydro Pump')
+    Reshiram = Pokemon('Reshiram', 150, 'Fire', 120, 150, 100, 120, 'Fire Fang', 'Blue Flare')
+    Torterra = Pokemon('Torterra', 125, 'Grass', 109, 75, 105, 85, 'Razor Leaf', 'Leaf Storm')
+    Porygon = Pokemon('Porygon-Z', 105, 'Normal', 80, 135, 70, 75, 'Tackle', 'Hyper Beam')
+    red = Player(pokemon_list[0], 3)
+    blue = Player(pokemon_list[0], 3)
+
     print("\nYou now have to test your pokemon! What do you want to do?")
     print("1. Survival Mode\n2. Heal Pokemon (Health is currently at {}/{})\n3. Exit".format(red.pokemon.hp, red.pokemon.max_hp))
     try:
@@ -169,4 +209,4 @@ def matchmaking():
         matchmaking()
 
 prologue()
-matchmaking()
+matchmaking() 
