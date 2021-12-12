@@ -40,7 +40,7 @@ class Pokemon:
             print("- Attack missed {}!".format(enemy.name))
 
         elif accuracy < 90:
-            print("- Attack hit {} for {} dmg points!".format(enemy.name, damage * effect_table[enemy.type]))
+            print("- Attack hit {} for {} dmg points!".format(enemy.name, round(damage * effect_table[enemy.type])))
             enemy.hp = max(0,round(enemy.hp - (damage * effect_table[enemy.type])))
             if effect_table[enemy.type] == 1.25:
                 print("- It's super effective")
@@ -50,7 +50,7 @@ class Pokemon:
                 print("- It's not very effective")
 
         else:
-            print("- Attack hit {} for {} dmg points!".format(enemy.name, damage * effect_table[enemy.type]))
+            print("- Attack hit {} for {} dmg points!".format(enemy.name, round(damage * effect_table[enemy.type])))
             print("- Critical hit on {}!".format(enemy.name))
             enemy.hp = max(0,round(enemy.hp - (damage * effect_table[enemy.type] * 1.25)))
             if effect_table[enemy.type] == 1.25:
@@ -85,7 +85,7 @@ class Pokemon:
         else:
             print("- It's not very effective")
 
-        print("- Attack hit {} for {} dmg points!".format(enemy.name, damage * effect_table[enemy.type]))
+        print("- Attack hit {} for {} dmg points!".format(enemy.name, round(damage * effect_table[enemy.type])))
         enemy.hp = max(0,round(enemy.hp - (damage * effect_table[enemy.type])))
         print("- HP of {}: {}/{}\n".format(enemy.name, enemy.hp, enemy.max_hp))
 
@@ -117,16 +117,22 @@ def random_match():
     global Kyogre, Reshiram, Virizion, Regigigas, pokemon_list, red, blue
     # player's turn
     print("\nYour turn:")
+    time.sleep(1)
     print("1. Normal attack\n2. Special Attack (PP: {})".format(red.special_pp))
     choice = int(input("What do you choose?: "))
-    if choice == 1:
-        red.pokemon.normal_attack(blue.pokemon)
-    elif choice == 2:
-        if red.special_pp > 0:
-            red.pokemon.special_attack(blue.pokemon)
-            red.special_pp-=1
-        else:
-            random_match()
+    try:
+        if choice == 1:
+            red.pokemon.normal_attack(blue.pokemon)
+        elif choice == 2:
+            if red.special_pp > 0:
+                red.pokemon.special_attack(blue.pokemon)
+                red.special_pp-=1
+            else:
+                print("\nChoose a valid option.\n")
+                random_match()
+    except:
+        print("\nChoose a valid option.\n")
+        random_match()
 
     if blue.pokemon.hp <= 0:
         print("You won!")
@@ -141,6 +147,7 @@ def random_match():
 
     # opponent's turn
     print("Blue's turn: ")
+    time.sleep(1)
     choice = random.randint(1,2)
     if choice == 1:
         blue.pokemon.normal_attack(red.pokemon)
@@ -166,6 +173,7 @@ def random_match():
 
 # Choosing pokemon
 def prologue():
+    global pokemon_list
     print("Welcome to Pokemon: Hot Trash! To begin, choose what pokemon you would like to start with!")
     print("1. {}\n2. {}\n3. {}\n4. {}".format(Kyogre.name, Reshiram.name, Virizion.name, Regigigas.name))
     try:
@@ -177,25 +185,31 @@ def prologue():
             red.pokemon = pokemon_list.pop(choice-1)
             blue.pokemon = pokemon_list[random.randint(0,len(pokemon_list)-1)]
             print("\nYou've chosen {}!".format(red.pokemon.name))
-            print("\nYour rival, Blue, has chosen {}".format(blue.pokemon.name))
+            print("Your rival, Blue, has chosen {}".format(blue.pokemon.name))
     except:
         print("\nWrong Input, Try Again.\n")
         prologue()
 
-    print("Congratulations! You now have your first pokemon.")
+    print("\nCongratulations! You now have your first pokemon.")
+    matchmaking()
+
+def matchmaking():
     print("You now have to test your pokemon, what would you like to do next?")
     print("1. Fight\n2. Heal Pokemon\n3. Quit")
-    choice = int(input("What do you choose?: "))
     try:
-        if choice == 1:
-            random_match()
-        elif choice == 2:
-            red.pokemon.full_restore()
-        elif choice == 3:
-            sys.exit()
-        else:
-            raise ValueError
+        choice = int(input("What do you choose?: "))
     except ValueError:
-        print("Choose a valid option.")
+        print("\nChoose a valid option.\n")
+        matchmaking()
+
+    if choice == 1:
+        random_match()
+    elif choice == 2:
+        red.pokemon.full_restore()
+        matchmaking()
+    elif choice == 3:
+        sys.exit()
+    else:
+        raise ValueError
 
 prologue()
