@@ -74,7 +74,7 @@ def partition_type(args,first,last):
    swaps = 0
 
    done = False
-   while not done: #while split point is not foun 
+   while not done: 
        while rightmark >= 0 and isinstance(args[rightmark], int) == False and rightmark >= leftmark:
             rightmark = rightmark - 1
        while leftmark <= len(args)-1 and isinstance(args[leftmark], int) == True and leftmark <= rightmark:

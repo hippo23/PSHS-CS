@@ -44,11 +44,12 @@ def binary_search(list, x, bottom_limit, top_limit):
     # check if the base case is true
     if top_limit>=bottom_limit:
         middle_point = (top_limit + bottom_limit)//2
-        # all are recursive cases, with their respective definitions
+        # recursive case 1 and 2
         if list[middle_point]<x:
             return binary_search(list, x, middle_point+1, top_limit)
         elif list[middle_point]>x:
             return binary_search(list, x, bottom_limit, middle_point-1)
+        # base case & definition
         else:
             return middle_point
     else:
@@ -58,20 +59,20 @@ def binary_search(list, x, bottom_limit, top_limit):
 def sequential_search(list, x, size):
     # check for the base case
     if size >= 0:
-        # recursive case 1
+        # base case 2
         if list[size] == x:
-            # recursive definition 1
+            # base definition 2
             return size
-        # recursive case 2
+        # recursive case 1
         else:
-            # recursive definition 2
+            # recursive definition 1
             return sequential_search(list, x, size-1)
     else:
         # base case definition
         return -1
 
 # Collatz Conjecture test
-print("The number of steps taken to transform 27 to 1 is: {}\n".format(collatz_conjecture(27)))
+print("The number of steps taken to transform 140 to 1 is: {}\n".format(collatz_conjecture(140)))
 
 # Greatest Common Factor test
 print("The greatest common factor of 198 and 360 is: {}\n".format(gcf(198, 360)))
