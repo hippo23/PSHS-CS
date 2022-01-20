@@ -3,6 +3,7 @@
 #Grade Level
 
 #Part1 : Arrange the following algorithms in increasing time complexity.  
+steps = 0
 
 #Recursive Factorial
 #Best Case: Ω(n)
@@ -59,6 +60,8 @@ def merge(alist):
 #Best Case: Ω(n^2)
 #Worst Case: O(n^2)
 def pascal(n):
+    global steps
+    iterations = 0
     '''This is a recursive function that gets
        the nth row of the pascal's triangle'''
     if n == 1:
@@ -66,9 +69,13 @@ def pascal(n):
     else:
         line = [1]
         previous_line = pascal(n-1)
+        print("-------")
+        print(previous_line)
         for i in range(len(previous_line)-1):
+            print(i)
             line.append(previous_line[i] + previous_line[i+1])
         line += [1]
+        print(line)
     return line
 
 
@@ -118,3 +125,5 @@ def balanced_par(palin_string):
 
     return palindrome
 
+pascal(10)
+print(steps)
