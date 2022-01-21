@@ -98,32 +98,47 @@ def selection(collection):
 
 #Put your Stack Class below.
 class Stack:
+    # store all values in stack in items attribute
     def __init__(self):
         self.items = []
+    # use push to appen any elemnts to the items attribute
     def push(self, item):
         self.items.append(item)
+    # use pop to delete and return the last elemement in the items attribute
     def pop(self):
         return self.items.pop()
 
 #Put your code below.
 #palindrome checker
 def balanced_par(palin_string):
+    # the left half of the string will be stored in a Stack
     left_half = Stack()
+    # declare boolean to show whether or not the string is a palindrome
     palindrome = True
+    # get the middle of the string
     middle = (len(palin_string)-1)//2
+    # in the event of an add-numbered string, use a separate variable to ignore the middle character
+    # without changing the original string
     new_string = palin_string
     if len(palin_string)%2 != 0:
+        # ignore middle character if string is odd-numbered
         new_string = palin_string[:middle] + palin_string[middle+1:]
+        # find middle of new string
         middle = (len(new_string)-1)//2
-
+    
+    # iterature througout the entirel length of the new string
     for i in range(len(new_string)):
+        # if we are still before or at the middle of the string, continue to add current elemement
+        # to stack
         if i <= middle:
             left_half.push(new_string[i].lower())
         else:
+            # if we are no longer at the middle, remove the last item from the stack and compare it to the current elemement
+            # in the new string
             if new_string[i].lower() != left_half.pop():
+                # in the case that they are different, the string is no longer a palindrome
                 palindrome = False
+                break
 
+    # if no character in the right half was different from the left half, then the string is a palindrome
     return palindrome
-
-pascal(10)
-print(steps)

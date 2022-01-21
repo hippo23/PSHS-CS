@@ -1,35 +1,42 @@
 import time
 import random
+# MAGLEO, Simon Benedict A.
 
 # roll a regular (6 sided) die
-# O(1) - constant time
+# Running time complexity - O(1)
 def roll_dice():
-    # as can be seen, the function only executes one command to generate a number from 1 to 6
-    # with the command itself only taking constant time, thus, the time complexity of the function
-    # is constant time or O(1) as well.
+    # we only execute the function once, with the operation taking constant time.
+    # thus, the time complexity of the function overall will also be constant time.
     return random.randint(1,6)
 
 # binary search
-# O(log(n)) - logarithmic time complexity
+# Running time complexity - O(log(n))
 def binary_search(find, collection):
     first = 0
     last = len(collection) - 1
     found = False
     while first<=last and not found:
         mid = (first + last)//2
+        # find the middle of the list
         print(collection[mid])
+        # assuming this is the worst-case scenario, we won't find the element we already
+        # searching for until the very end of the algorithm
         if collection[mid] == find:
             found = True
         else:
+            # continue to split the list in half if we don't find the element we are searching for
             if find < collection[mid]:
                 last = mid - 1
             else:
                 first = mid + 1
 
+    # The number of times we can split a list into halves is equal to log2(n). 
+    # Since each iteration of the loop takes constant time, the time complexity
+    # of the algorithm overall will be log2(n), or log(n) in short.
     return found
 
 # quick sort
-# O(nlogn) - loglinear time complexity
+# Running time comeplexity - O(nlogn)
 def quick_sort(alist,first,last):
     
     if first < last: 
@@ -66,37 +73,57 @@ def partition(alist,first,last):
    return rightmark
 
 # insertion sort
-# O(n^2) - Quadratic Time Complexity
+# Running time complexity - O(n^2)
 def insertion(alist):
    for index in range(1,len(alist)): 
+     # iterate throughout the list
      print(alist)
      currentvalue = alist[index]
      position = index
      
+     # for each iterations of the list, we will have to go through 1 + 2 + 3... + (n-2) + (n-1)
+     # comparisons and swaps. This is only true in the worst-case scenario wherein the list is sorted
+     # in reverse
      while position>0 and alist[position-1]<currentvalue:
          alist[position]=alist[position-1]
          position = position-1
      alist[position]=currentvalue
 
 # brute-force attack to break alpha-numeric passwords
-# O(64^n) - exponential time complexity
+# Running time comeplexity - O(2^n)
 
+# the number of possible combinations that an alphanumeric password 
+# of length n can have is equal to 62^n, where 62 is the amount of
+# unique alphanumeric characters. 
+# In the worst case, we will only find the right password at the 
+# very end. Thus, we need to generate 62^n passwords, with the generation
+# of each password taking constant time.
+
+# declare memo dictionary to store results of all subproblem
 memo = {}
 time_taken = 0.0
 def hanoi(x):
     global time_taken
 
     time_before = time.process_time()
+    # if the subproblem of the algoritm has already been memoized, get result from memo
     if x in memo.keys():
         return memo[x]
+    # if not and x == 1, execute base case
     if x == 1:
         return 1
 
+    # else, recursively call hanoi(x-1) twice 
     steps = hanoi(x-1) + hanoi(x-1)
+    # memoize number of steps for current subpoblem
     memo[x] = steps
     time_after = time.process_time()
     time_taken = time_after - time_before
+    # return the number of steps
     return steps
+    # In this algorithm, hanoi(x) (where x is some number) recurses only the first time its called. Thus, the number of subproblems
+    # we actually need to solve is n, with each subproblem taking constant time.
+    # This shows that the time complexity of the algorithm is linear.
 
 def hanoi_nonmemo(x):
     global time_taken
