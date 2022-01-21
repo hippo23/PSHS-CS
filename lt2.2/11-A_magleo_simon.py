@@ -14,6 +14,10 @@ def fact(x):
     if x == 0:
         return 1
     else:
+        # each time we call the fact function recursively, it will take us constant time. The number of times 
+        # the function recurses is equal to x, where x is the number that was entered.
+        # Thus, the number of steps that is required by the algorithm is n, giving us linear time complexity
+        # worst and best case will take the same time
         return (x * fact(x-1))
 
 #Merge Sort
@@ -27,6 +31,7 @@ def merge(alist):
         lefthalf = alist[:mid] 
         righthalf = alist[mid:] 
 
+        # we recursively call merge on the array, eventually splitting the array logn times
         merge(lefthalf) 
         merge(righthalf) 
 
@@ -34,6 +39,8 @@ def merge(alist):
         j=0
         k=0
 
+        # when merging the array back together, we do n things. Thus, we do n things, logn times, giving us a time complexity of loglinear
+        # we will also not know if a list is sorted until the very end, meaning that the best and worst case of the algorithm is the same
         while i < len(lefthalf) and j < len(righthalf):
             
             if lefthalf[i] <= righthalf[j]: 
@@ -66,12 +73,12 @@ def pascal(n):
     else:
         line = [1]
         previous_line = pascal(n-1)
-        print("-------")
-        print(previous_line)
+        # iterate throughout the length of the previous line - 1. In total, the amount of times we iterate is equal to 1 + 2... + (n-3) + (n-2)
+        # this gives us quadratic time
+        # this is the same for both best case and worst case.
         for i in range(len(previous_line)-1):
             line.append(previous_line[i] + previous_line[i+1])
         line += [1]
-        print(line)
     return line
 
 
@@ -81,9 +88,14 @@ def pascal(n):
 #Worst Case: O(n^2) : quadratic
 def selection(collection):
     '''This is the modified version of selection sort that I discussed in class'''
+    # iterate througout the length of the array, starting from the end
     for endnum in range(len(collection)-1, 0, -1):
         print(collection)
         max_idx = endnum
+        # if any number is greater than the current element at endnum, swap those numbers
+        # in total, we will have to iterate n times, doing roughly n-1 comparisons each time.
+        # this gives us a time complexity of n^2 for both worst case and best case
+        # as the algorithm will not know that the list is already sorted until the very end
         if max(collection[0:endnum]) > collection[endnum]:
             max_idx = collection.index(max(collection[0:endnum]))
         collection[endnum], collection[max_idx] = collection[max_idx], collection[endnum]
@@ -135,4 +147,3 @@ def balanced_par(palin_string):
     # if no character in the right half was different from the left half, then the string is a palindrome
     return palindrome
 
-print(balanced_par("Saippuakivikauppias"))
