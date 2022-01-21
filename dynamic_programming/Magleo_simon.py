@@ -1,6 +1,11 @@
+# MAGLEO, Simon Benedict A.
+# 11 - A
+# LG 5.1 - 5.3 Analysis of ALgorithms
+
 import time
 import random
-# MAGLEO, Simon Benedict A.
+
+# Exercise Section 1 - Analysis of Algorithms
 
 # roll a regular (6 sided) die
 # Running time complexity - O(1)
@@ -36,13 +41,21 @@ def binary_search(find, collection):
     return found
 
 # quick sort
-# Running time comeplexity - O(nlogn)
+# Running time comeplexity - O(n^2)
 def quick_sort(alist,first,last):
     
     if first < last: 
        splitpoint = partition(alist,first,last) 
        quick_sort(alist,first,splitpoint-1) 
        quick_sort(alist,splitpoint+1,last) 
+       # the worst case for this algorithm is when the pivot value chosen by the parition function
+       # is either always the greatest or always the smallest value. Thus, the first time we partition the array,
+       # we will end up with a parition that is size 1, and a parition that is size n-1. The time taken to
+       # do this will also be n-1. We then continue to call the parition function recursively until both paritions
+       # it produces are of size 1.
+
+       # overall, the time it will take to partition and sort the entire array will be equal to
+       # n + n-1 + n-2 + ... 3 + 2. This leaves us with a worst case time complexity of n^2.
 
 def partition(alist,first,last):
    pivotvalue = alist[first]
@@ -98,6 +111,8 @@ def insertion(alist):
 # In the worst case, we will only find the right password at the 
 # very end. Thus, we need to generate 62^n passwords, with the generation
 # of each password taking constant time.
+
+# Exercise Section 2 - Dynamic Programming
 
 # declare memo dictionary to store results of all subproblem
 memo = {}
