@@ -243,9 +243,6 @@ raichu_attr = {
 dex_count = 0
 pokedex = []
 
-# current pokemon
-curr_pokemon = None
-
 def quick_sort(args, param):
     quicksort_helper(args, 0, len(args)-1, param)
 
@@ -487,7 +484,6 @@ def view_dex(alist):
             print("")
 
 def search_dex(alist):
-    global pokedex
     param = input("What type of pokemon are you looking for? ")
     param = param.title()
     print("")
