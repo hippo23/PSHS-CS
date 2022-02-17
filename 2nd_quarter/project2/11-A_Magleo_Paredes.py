@@ -1,9 +1,8 @@
-# MAGLEO, Simon Benedict A.
-# 11 - A
-# 2nd Quarter Project
+# Paredes, Andrew; Magleo, Simon
+# Grade 11
+# CS 2nd Quarter Project
 import sys
 import random
-import time
 
 multipliers = {'super_effective': 2, 'effective': 1, 'not_effective': 0.5}
 type_matchups = {
@@ -243,6 +242,16 @@ raichu_attr = {
 dex_count = 0
 pokedex = []
 
+# Worst case running time of sorting algorithm (quick sort) is: nlogn or loglinear
+
+# Algorithm Analysis
+
+# Quick sort is an algorithm that falls under the category of efficient algorithms,
+# and is more commonly used than other efficient algorithms such as merge sort for
+# small data sets, such as the current pokedex (15 elements). However, it can still 
+# be more efficient than sorting algorithms like insertion sort when data sets become
+# larger, making it a versatile algorithm.
+
 def quick_sort(args, param):
     quicksort_helper(args, 0, len(args)-1, param)
 
@@ -288,6 +297,12 @@ def partition(args, start, end, param):
     args[rightmark] = temp
     # return rightmark as splitpoint
     return rightmark
+
+# looking at the steps of quick sort above, it can be determined that its best case
+# time complexity is nlogn, while its worst case is n^2 (when the array is sorted or reversed)
+# However, the possibility of the data set being sorted or reversed is low as it gets larger.
+# Thus, it is a more ideal sorting algorithm than insertion sort, especially if we make the pokedex
+# encompass most of the pokemons within the games (900+)
 
 def binary_search(alist, param, element, bottom, top):
     if top >= bottom:
@@ -342,6 +357,13 @@ maze2 = [[ 1, 0, 1, 1, 0 ],
          [ 1, 1, 1, 0, 9 ],
          [ 0, 1, 0, 1, 1 ],
          [ 1, 1, 1, 1, 1 ]]
+
+maze3 = [[ 1, 0, 1, 1, 1, 1, 1 ],
+        [ 1, 1, 1, 0, 9, 0 ,1 ],
+        [ 0, 1, 0, 1, 1, 0, 1 ],
+        [ 0, 1, 0, 1, 1, 1, 1 ],
+        [ 1, 1, 0, 0, 0, 0, 1 ],
+        [ 0, 1, 1, 1, 1, 1, 1 ]]
 
 def maze_path(maze, curr_pokemon):
 
@@ -409,6 +431,7 @@ def maze_path(maze, curr_pokemon):
 
         print()
 
+    print(curr_pokemon.name, 'failed to find the treasure')
     return False
 
 # class for pokemon
@@ -429,7 +452,7 @@ class pokemon():
                 ('%03d' % (self.index)).ljust(10),
                 self.name.ljust(15),
                 self.type.ljust(10),
-                str(self.hp).rjust(10),
+                str(self.max_hp).rjust(10),
                 str(self.atk).rjust(10),
                 str(self.sp_atk).rjust(10),
                 str(self.defense).rjust(10),
@@ -440,21 +463,44 @@ class pokemon():
         accuracy = random.randint(1,100)
 
         if accuracy <= self.move['move_acc']:
-            damage = round(0.3 * (self.atk/opponent.defense) * self.move['move_power'], 0)
+            crit_hit = random.randint(6, 100) <= 6
 
-            if opponent.hp - damage >= 0:
-                opponent.hp -= damage
+            if crit_hit:
+                print("\nCritical Hit!")
+                damage = round(2*(0.3 * (self.atk/opponent.defense) * self.move['move_power']), 0)
+
+                if opponent.hp - damage >= 0:
+                    opponent.hp -= damage
+                else:
+                    opponent.hp = 0
+
+                return damage
             else:
-                opponent.hp = 0
+                damage = round(0.3 * (self.atk/opponent.defense) * self.move['move_power'], 0)
 
-            return damage
+                if opponent.hp - damage >= 0:
+                    opponent.hp -= damage
+                else:
+                    opponent.hp = 0
+
+                return damage
+
         else:
             print("\n{} missed the attack!".format(self.name))
             return 0
 
 
     def special_attack(self, opponent):
-        damage = round(type_matchups[self.type.lower()][opponent.type.lower()] * 0.3 * (self.sp_atk / opponent.sp_defense) * self.sp_move['move_power'], 0)
+        multiplier = type_matchups[self.type.lower()][opponent.type.lower()]
+
+        if multiplier == 0.5:
+            print("It's not very effective.")
+        elif multiplier == 1:
+            print("It's effective.")
+        elif multiplier == 2:
+            print("It's super effective!")
+
+        damage = round(multiplier * 0.3 * (self.sp_atk / opponent.sp_defense) * self.sp_move['move_power'], 0)
 
         if opponent.hp - damage >= 0:
             opponent.hp -= damage
@@ -465,6 +511,9 @@ class pokemon():
 
     def full_restore(self):
         self.hp = self.max_hp
+
+    def navigate(self, maze):
+        maze_path(maze, self)
 
 def view_dex(alist):
     print(
@@ -487,16 +536,16 @@ def search_dex(alist):
     param = input("What type of pokemon are you looking for? ")
     param = param.title()
     print("")
-
     
     quick_sort(alist, 'type')
     found = binary_search(alist, 'type', param, 0, len(alist)-1)
 
     if found:
         results = [pokemon for pokemon in alist if pokemon.type == param]
+        quick_sort(results, 'index')
         view_dex(results)
     else:
-        print("\nSorry, we can't any pokemons of that type.")
+        print("\nSorry, we can't find any pokemons of that type.")
 
 bulbasaur = pokemon(bulbasaur_attr)
 ivysaur = pokemon(ivysaur_attr)
@@ -521,52 +570,85 @@ raichu = pokemon(raichu_attr)
 def main():
     print("\nWelcome to Pseudo-mon!\nWhat would you like to do?")
     print("1: Open pokedex\n2: Pick Pokemon\n3: Exit Program")
-    choice = int(input("Your choice: "))
+    choice = input("Your choice: ")
 
-    if choice == 1:
-        open_dex()
-    elif choice == 2:
-        print("\nHere's a list of all the pokemon!\n")
-
-        quick_sort(pokedex, "index")
-        view_dex(pokedex)
-
-        choice = int(input("Please input the index of your pokemon: "))
-
-        curr_pokemon = pokedex[binary_search(pokedex, 'index', choice, 0, len(pokedex)-1)]
-        print("You chose {}!".format(curr_pokemon.name))
-
-        use_pokemon(curr_pokemon)
-    elif choice == 3:
+    if choice == '1':
+        open_dex(pokedex)
+    elif choice == '2':
+        pick_pokemon(pokedex)
+    elif choice == '3':
         print("\nThank you for playing!")
         sys.exit()
+    else:
+        print("\nPlease pick an option within the choices.")
 
-def open_dex():
+    main()
+
+def open_dex(alist):
         print("\nPseudo-dex Opened.\nWhat would you like to do?")
         print("1: View All Pokemon\n2: Sort Pokemon\n3: Search\n4: Go Back to Main")
-        choice = int(input("Your choice: "))
-        if choice == 1:
-            view_dex(pokedex)
-            open_dex()
-        elif choice == 2:
-            print("\nChoose your sort Criteria:")
-            print("1: Pokemon Index")
-            print("2: Pokemon Name")
-            print("3: HP")
-            print("4: ATK")
-            print("5: SP. ATK")
-            print("6: DEF")
-            print("7: SP. DEF.")
-            choice_table = ['index','name','hp','atk','sp_atk','defense','sp_defense']
-            choice = int(input("Your choice: "))
-            if choice > 0 and choice <= 7:
-                quick_sort(pokedex, choice_table[choice-1])
-                view_dex(pokedex)
-        elif choice == 3:
-            search_dex(pokedex)
-            open_dex()
-        elif choice == 4:
+        choice = input("Your choice: ")
+        if choice == '1':
+            view_dex(alist)
+            open_dex(alist)
+        elif choice == '2':
+            sort_dex(alist)
+        elif choice == '3':
+            search_dex(alist)
+            open_dex(alist)
+        elif choice == '4':
             main()
+        else:
+            print("\nPlease pick an option within the choices.")
+
+        open_dex(alist)
+
+def pick_pokemon(alist):
+    print("\nHere's a list of all the pokemon!\n")
+
+    quick_sort(alist, 'index')
+    view_dex(alist)
+
+    try:
+        choice = int(input("Please input the index of your pokemon: "))
+
+        if choice > 0 and choice <= len(alist):
+            curr_pokemon = alist[binary_search(alist, 'index', choice, 0, len(alist)-1)]
+            print("You chose {}!".format(curr_pokemon.name))
+
+            use_pokemon(curr_pokemon)
+        else:
+            raise Exception
+    except Exception as e:
+        print("\nPlease pick an option within the choices.")
+
+    pick_pokemon(alist)
+
+def sort_dex(alist):
+    print("\nChoose your sort Criteria:")
+    print("1: Pokemon Index")
+    print("2: Pokemon Name")
+    print("3: HP")
+    print("4: ATK")
+    print("5: SP. ATK")
+    print("6: DEF")
+    print("7: SP. DEF.")
+    print("8: Go Back to Pseudo-dex")
+    choice_table = ['index','name','hp','atk','sp_atk','defense','sp_defense']
+    choice = input("Your choice: ")
+
+    if choice > '0' and choice <= '7':
+        print("\nBefore: \n")
+        view_dex(alist)
+        quick_sort(alist, choice_table[int(choice)-1])
+        print("\nAfter:\n")
+        view_dex(alist)
+    elif choice == '8':
+        open_dex(alist)
+    else:
+        print("\nPlease pick an option within the choices.")
+    
+    sort_dex(pokedex)
 
 def use_pokemon(curr_pokemon):
     print("\nNow what would you like {} to do?".format(curr_pokemon.name))
@@ -575,53 +657,75 @@ def use_pokemon(curr_pokemon):
     print("3: Sleep")
     print("4: Go Back to Main")
 
-    choice = int(input("Your choice: "))
+    choice = input("Your choice: ")
 
-    if choice == 1:
+    if choice == '1':
+        pokedex.remove(curr_pokemon)
         opponent = pokedex[random.randint(0, len(pokedex)-1)]
+
         print("\n{}'s opponent is {}!".format(curr_pokemon.name, opponent.name))
         battle_pokemon(curr_pokemon, opponent)
-    elif choice == 2:
-        maze_path(maze2, curr_pokemon)
-    elif choice == 3:
+    elif choice == '2':
+        curr_pokemon.navigate(maze)
+    elif choice == '3':
         print("\n{} went to sleep.".format(curr_pokemon.name))
         curr_pokemon.full_restore()
         print("{}'s health was restored to {}".format(curr_pokemon.name, curr_pokemon.max_hp))
-        use_pokemon(curr_pokemon)
-    elif choice == 4:
+    elif choice == '4':
         main()
+    else:
+        print("\nPlease pick an option within the choices.")
+
+    use_pokemon(curr_pokemon)
 
 def battle_pokemon(curr_pokemon, opp):
 
     def player_attacks():
+
         print("\nMoves:")
         print("1: Use {}".format(curr_pokemon.move['move_name']))
         print("2: Use {}".format(curr_pokemon.sp_move['move_name']))
         print("3: Nap (Restores 20% hp)")
 
-        choice = int(input("Pick your move: "))
+        choice = input("Pick your move: ")
 
-        if choice == 1:
+        if choice == '1':
             print("\n{} used {} against {}".format(curr_pokemon.name, curr_pokemon.move['move_name'], opp.name))
             print("\n{} recieved {} damage".format(opp.name, curr_pokemon.attack(opp)))
 
-        elif choice == 2:
+        elif choice == '2':
             print("\n{} used {} against {}".format(curr_pokemon.name, curr_pokemon.sp_move['move_name'], opp.name))
             print("\n{} recieved {} damage".format(opp.name, curr_pokemon.special_attack(opp)))
 
-        elif choice == 3:
-            curr_pokemon.hp += curr_pokemon.max_hp * 0.20
+        elif choice == '3':
+            curr_pokemon.hp += round(curr_pokemon.max_hp * 0.20, 0)
             if curr_pokemon.hp > curr_pokemon.max_hp:
                 curr_pokemon.hp = curr_pokemon.max_hp
-            print("Health of {} was restorted by {} HP".format(curr_pokemon.name, curr_pokemon.max_hp * 0.20))
+            print("Health of {} was restored by {} HP".format(curr_pokemon.name, round(curr_pokemon.max_hp * 0.20, 0)))
+
+        else:
+            print("\nPlease pick an option within the choices")
+            player_attacks()
 
         print("\n{}: {}/{}".format(curr_pokemon.name, curr_pokemon.hp, curr_pokemon.max_hp))
         print("{}: {}/{}".format(opp.name, opp.hp, opp.max_hp))
 
     def opp_attacks():
-        print("\n{} used {} against {}".format(opp.name, opp.move['move_name'], curr_pokemon.name))
 
-        print("\n{} recieved {} damage".format(curr_pokemon.name, opp.attack(curr_pokemon)))
+        rand_int = random.randint(1, 3)
+
+        if rand_int == 1:
+            print("\n{} used {} against {}".format(opp.name, opp.move['move_name'], curr_pokemon.name))
+            print("\n{} recieved {} damage".format(curr_pokemon.name, opp.attack(curr_pokemon)))
+        elif rand_int == 2:
+            print("\n{} used {} against {}".format(opp.name, opp.sp_move['move_name'], curr_pokemon.name))
+            print("\n{} recieved {} damage".format(curr_pokemon.name, opp.special_attack(curr_pokemon)))
+        elif rand_int == 3:
+            print("\n{} chose to heal.".format(opp.name))
+            opp.hp += round(opp.max_hp * 0.20, 0)
+            if opp.hp > opp.max_hp:
+                opp.hp = opp.max_hp
+            print("Health of {} was restored by {} HP".format(opp.name, round(opp.max_hp * 0.20, 0)))
 
         print("\n{}: {}/{}".format(curr_pokemon.name, curr_pokemon.hp, curr_pokemon.max_hp))
         print("{}: {}/{}".format(opp.name, opp.hp, opp.max_hp))
@@ -630,7 +734,6 @@ def battle_pokemon(curr_pokemon, opp):
     if curr_pokemon.spd >= opp.spd:
         while True:
             print("\n-----Your Turn-----")
-            time.sleep(2.4)
             player_attacks()
 
             if opp.hp == 0:
@@ -639,7 +742,6 @@ def battle_pokemon(curr_pokemon, opp):
                 break
 
             print("\n-----Opponent's Turn-----")
-            time.sleep(2.4)
             opp_attacks()
             
             if curr_pokemon.hp == 0:
@@ -649,7 +751,6 @@ def battle_pokemon(curr_pokemon, opp):
     else:
         while True:
             print("\n-----Opponent's Turn-----")
-            time.sleep(2.4)
             opp_attacks()
 
             if curr_pokemon.hp == 0:
@@ -658,7 +759,6 @@ def battle_pokemon(curr_pokemon, opp):
                 break
 
             print("\n-----Your Turn-----")
-            time.sleep(2.4)
             player_attacks()
 
             if opp.hp == 0:
@@ -666,6 +766,7 @@ def battle_pokemon(curr_pokemon, opp):
                 print("\n{} is the winner".format(curr_pokemon.name))
                 break
 
+    pokedex.append(curr_pokemon)
     use_pokemon(curr_pokemon)
 
 main()
